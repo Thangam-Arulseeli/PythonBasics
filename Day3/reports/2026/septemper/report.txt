@@ -1,0 +1,5 @@
+EMPLOYEE SALARY REPORT
+========================================
+101 | Arun | Rs.85000
+102 | Priya | Rs.72000
+103 | Karthik | Rs.95000
