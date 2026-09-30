@@ -1,0 +1,315 @@
+> pip install pytest 	in power shell / cmd prompt
+
+> python -m pip show pytest
+
+> python -m pytest
+
+> python -m pytest --version
+
+> Run your pytestest sample code
+-----------------------------------
+> python -m pytest -v -------------- To check your pytest conditions  [ PASSED / FAILED ]
+
+You might get
+
+test_calculator.py::test_add PASSED
+test_calculator.py::test_subtract PASSED
+test_calculator.py::test_multiply FAILED
+test_calculator.py::test_divide PASSED
+
+> python -m pytest -v -s  -----------------> The -s option allows print() output to appear.
+
+-----------------------------
+
+Common assertions
+---------------------
+
+def is_adult(age):
+    return age >= 18
+-------------------------------------------------------------------
+-----------------------------------------------------------------
+def test_adult():
+    assert is_adult(25) is True
+
+----------------------------------------------
+assert result != expected
+----------------------------------------------------
+def find_employee(employee_id):
+    return None
+---------------------------------------------------
+
+def test_employee_not_found():
+    result = find_employee(100)
+    assert result is None
+-------------------------------------
+assert "Python" in "Python FastAPI"
+-------------------------------
+assert "email" in user
+-------------------------------------------------
+def divide(a, b):
+
+    if b == 0:
+        raise ValueError("Cannot divide by zero")
+
+    return a / b
+------------------------------------------
+import pytest
+
+
+def test_divide_by_zero():
+
+    with pytest.raises(ValueError):
+
+        divide(10, 0)
+
+This means:
+
+I expect divide(10, 0) to raise ValueError.
+
+You can also verify the error message:
+----------------------------------
+
+def test_divide_by_zero():
+
+    with pytest.raises(ValueError, match="Cannot divide by zero"):
+
+        divide(10, 0)
+
+==============================================
+
+
+What is a fixture?
+---------------------
+
+Imagine you have 20 tests.
+
+Every test needs an employee:
+
+employee = Employee(
+    "Arun",
+    "arun@gmail.com",
+    50000
+)
+
+You don't want to create this employee manually in every test.
+
+Without fixture:
+
+
+def test_salary():
+    employee = Employee("Arun", "arun@gmail.com", 50000)
+    ...
+
+
+def test_email():
+    employee = Employee("Arun", "arun@gmail.com", 50000)
+    ...
+
+
+def test_name():
+    employee = Employee("Arun", "arun@gmail.com", 50000)
+    ...
+
+Lots of duplication.
+
+A fixture provides reusable test data/setup.
+
+
+Basic fixture
+-----------------
+Create:
+----------
+test_employee.py
+----------------
+import pytest
+
+class Employee:
+
+    def __init__(self, name, email, salary):
+        self.name = name
+        self.email = email
+        self.salary = salary
+
+
+@pytest.fixture
+def employee():
+
+    return Employee(
+        "Arun",
+        "arun@gmail.com",
+        50000
+    )
+
+Now use the fixture in tests:
+-------------------------------
+def test_employee_name(employee):
+
+    assert employee.name == "Arun"
+
+
+def test_employee_email(employee):
+
+    assert employee.email == "arun@gmail.com"
+
+
+def test_employee_salary(employee):
+
+    assert employee.salary == 50000
+
+
+Notice this
+-----------
+def test_employee_name(employee):
+
+Pytest sees the parameter: Pytest sees the parameter:    employee
+
+
+and looks for a fixture named:  
+@pytest.fixture
+def employee():
+
+It automatically executes the fixture and passes the returned object into the test.
+
+
+Fixture execution flow
+
+The flow is:
+
+test_employee_name(employee)
+            │
+            ▼
+      pytest searches
+      for fixture
+            │
+            ▼
+@pytest.fixture
+def employee():
+            │
+            ▼
+ Employee(...)
+            │
+            ▼
+       returns object
+            │
+            ▼
+ test receives employee
+            │
+            ▼
+ assert employee.name == "Arun"
+
+This is one of the most important concepts to understand.
+
+
+Practical project example
+
+Let's create a proper structure:
+
+PythonBasics/
+│
+├── employee.py
+│
+└── tests/
+    ├── test_employee.py
+    └── conftest.py
+
+# -------------------------------------------------------
+
+employee.py
+class Employee:
+
+    def __init__(self, name, email, salary):
+        self.name = name
+        self.email = email
+        self.salary = salary
+
+    def calculate_bonus(self):
+        return self.salary * 0.10
+
+    def is_high_earner(self):
+        return self.salary >= 50000
+
+# ------------------------------------------------------------------
+
+conftest.py
+Fixtures that need to be shared across multiple test files are commonly placed in conftest.py.
+
+import pytest
+
+from employee import Employee
+
+
+@pytest.fixture
+def employee():
+
+    return Employee(
+        "Arun",
+        "arun@gmail.com",
+        50000
+    )
+
+
+
+test_employee.py
+def test_employee_name(employee):
+
+    assert employee.name == "Arun"
+
+
+def test_employee_email(employee):
+
+    assert employee.email == "arun@gmail.com"
+
+
+def test_employee_salary(employee):
+
+    assert employee.salary == 50000
+
+
+def test_employee_bonus(employee):
+
+    assert employee.calculate_bonus() == 5000
+
+
+def test_high_earner(employee):
+
+    assert employee.is_high_earner() is True
+
+
+
+python -m pytest -v
+
+Pytest automatically finds the fixture in conftest.py.
+
+Expected:
+
+test_employee.py::test_employee_name PASSED
+test_employee.py::test_employee_email PASSED
+test_employee.py::test_employee_salary PASSED
+test_employee.py::test_employee_bonus PASSED
+test_employee.py::test_high_earner PASSED
+
+5 passed
+
+
+
+Fixture with setup and teardown
+
+Fixtures become much more useful when testing databases.
+
+For example:
+
+@pytest.fixture
+def employee():
+
+    print("Creating employee")
+
+    employee = Employee(
+        "Arun",
+        "arun@gmail.com",
+        50000
+    )
+
+    yield employee
+
+    print("Cleaning up employee")
+
