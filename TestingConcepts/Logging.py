@@ -21,9 +21,10 @@ Logging Levels
 ==================
 Python provides five commonly used levels:
 -------------------------------------------
-DEBUG
+
 INFO
 WARNING
+DEBUG
 ERROR
 CRITICAL 
 '''

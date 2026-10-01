@@ -1,5 +1,5 @@
 # This is a simple Python function that calculates the total price of an item based on its price and quantity.
-'''
+
 def calculate_total(price, quantity):
     total = price * quantity
 
@@ -9,10 +9,9 @@ def calculate_total(price, quantity):
 
     return total
 
-
 result = calculate_total(100, 5)
 print("Total:", result)
-'''
+
 # --------------------------------
 
 ### Logging in Python

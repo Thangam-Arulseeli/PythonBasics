@@ -5,22 +5,19 @@
 
 #------------------------------
 
-
 def add(a, b):
     print(f"Adding {a} and {b}") 
     return a + b
 
-
 def divide(a, b):
-
     # if b == 0:
-    #     raise ValueError("Cannot divide by zero")
+    #    raise ValueError("Cannot divide by zero")
 
     print(f"Dividing {a} by {b}")
     return a / b
 
 a = 10
-b = 20
+b = 5
 c = add(a, b)
 print(f"Result of addition: {c}")
 
@@ -46,7 +43,7 @@ def func3():
     func4()
 
 def func4():
-    try: 
+    try:  
         print("Function 4")
         print(10/0)  # This will raise a ZeroDivisionError
         # Uncomment the next line to raise an exception and see the stack trace
@@ -55,11 +52,13 @@ def func4():
         print(f"Exception caught in func4: {e}")
         # Print the stack trace
         import traceback
+        print("Stack trace:")
         traceback.print_exc()   
     print("Function 4")
 
 # For demonstration, we can call func1() to see the stack trace in action.
-func1()   
+func1() 
+
 # -----------------------------
 '''
 # Printing the stack trace using the traceback module

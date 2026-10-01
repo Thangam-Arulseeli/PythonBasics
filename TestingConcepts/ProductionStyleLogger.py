@@ -1,5 +1,6 @@
 ### Custom Exceptions
 ### For larger applications, define meaningful exceptions.
+'''
 class InsufficientBalanceError(Exception):
     pass
 
@@ -18,7 +19,7 @@ try:
 
 except InsufficientBalanceError as ex:
     print(ex)
-
+'''
 # Output:
 # Insufficient account balance
 # ===============================
